@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SegreSmart – Smart Waste Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body { background:#f4f7f6; font-family:'Segoe UI',sans-serif; }
+    #map { height: 280px; border-radius:10px; }
+    .feed-box { max-height: 160px; overflow-y:auto; background:#fff; padding:10px; border-radius:8px; }
+    .progress { height: 8px; margin-bottom:5px; }
+    .card { border-radius: 12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    #trendChart,#pieChart { height:220px !important; }
+    .bin-level { height:120px; width:60px; border:2px solid #333; border-radius:8px; position:relative; margin:0 auto; background:#eaeaea; }
+    .bin-fill { position:absolute; bottom:0; left:0; width:100%; border-radius:6px; }
+    .fill-organic { background:#28a745; }
+    .fill-recyclable { background:#007bff; }
+    .fill-hazardous { background:#dc3545; }
+    .alert-panel { max-height:120px; overflow-y:auto; }
+    .manual-header { font-family:'Comic Sans MS',cursive; font-weight:bold; color:#444; }
+    body.dark { background:#1a1a1a; color:#eee; }
+    body.dark .card { background:#222; color:#eee; }
+  </style>
+</head>
+<body class="p-3">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="manual-header">SegreSmart – Waste Management Live Dashboard</h2>
+    <button id="modeToggle" class="btn btn-sm btn-outline-secondary"><i class="fa fa-moon"></i> Toggle Mode</button>
+  </div>
+
+  <div class="row">
+    <!-- Left -->
+    <div class="col-md-7">
+      <div class="card mb-3">
+        <div class="card-header"><i class="fa fa-map"></i> Device Locations</div>
+        <div class="card-body p-0"><div id="map"></div></div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header"><i class="fa fa-chart-line"></i> Waste Trends (7 Days)</div>
+        <div class="card-body"><canvas id="trendChart"></canvas></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><i class="fa fa-pie-chart"></i> Today’s Waste Mix</div>
+        <div class="card-body"><canvas id="pieChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Right -->
+    <div class="col-md-5">
+      <div class="card mb-3">
+        <div class="card-header"><i class="fa fa-bell"></i> Alerts</div>
+        <div class="card-body alert-panel" id="alertsBox"></div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header"><i class="fa fa-bullhorn"></i> Community Notice Board</div>
+        <div class="card-body" id="noticeBox">
+          <ul>
+            <li>Ward A cleaning drive on Sunday.</li>
+            <li>Free compost giveaway next week.</li>
+            <li>Reward ceremony on Green Day.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header"><i class="fa fa-trophy"></i> Leaderboard</div>
+        <div class="card-body p-0">
+          <table class="table table-sm mb-0" id="leaderboardTable">
+            <thead><tr><th>Household</th><th>Points</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><i class="fa fa-recycle"></i> Bin Levels</div>
+        <div class="card-body d-flex justify-content-around">
+          <div><div class="bin-level"><div class="bin-fill fill-organic" id="organicFill"></div></div><small>Organic</small></div>
+          <div><div class="bin-level"><div class="bin-fill fill-recyclable" id="recycleFill"></div></div><small>Recycle</small></div>
+          <div><div class="bin-level"><div class="bin-fill fill-hazardous" id="hazardFill"></div></div><small>Hazard</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Devices
+    const devices = [
+      {id:'dev-001',name:'Bin-A1',coords:[18.9440,72.8295],fill:70},
+      {id:'dev-002',name:'Bin-B2',coords:[18.9451,72.8310],fill:85},
+      {id:'dev-003',name:'Bin-C3',coords:[18.9460,72.8325],fill:40}
+    ];
+
+    const households = [
+      {name:'House #101',points:150},
+      {name:'House #202',points:300},
+      {name:'House #303',points:120}
+    ];
+
+    const alertsBox=document.getElementById('alertsBox');
+    const organicFill=document.getElementById('organicFill');
+    const recycleFill=document.getElementById('recycleFill');
+    const hazardFill=document.getElementById('hazardFill');
+    const leaderboardTable=document.querySelector('#leaderboardTable tbody');
+
+    // Map
+    const map = L.map('map').setView([18.9440,72.8295],14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
+    devices.forEach(d=>L.marker(d.coords).addTo(map).bindPopup(d.name));
+
+    // Trend Chart
+    new Chart(document.getElementById('trendChart'),{
+      type:'line',
+      data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      datasets:[
+        {label:'Organic',data:[40,60,50,70,65,80,55],borderColor:'#28a745',fill:false},
+        {label:'Recycle',data:[20,25,35,40,45,30,20],borderColor:'#007bff',fill:false},
+        {label:'Hazard',data:[10,15,12,18,20,14,12],borderColor:'#dc3545',fill:false}
+      ]},options:{responsive:true}
+    });
+
+    // Pie Chart
+    new Chart(document.getElementById('pieChart'),{
+      type:'doughnut',
+      data:{labels:['Organic','Recycle','Hazardous'],
+      datasets:[{data:[60,25,15],backgroundColor:['#28a745','#007bff','#dc3545']}]}
+    });
+
+    // Leaderboard
+    function updateLeaderboard(){
+      leaderboardTable.innerHTML='';
+      households.sort((a,b)=>b.points-a.points).forEach(h=>{
+        leaderboardTable.insertAdjacentHTML('beforeend',`<tr><td>${h.name}</td><td>${h.points}</td></tr>`);
+      });
+    }
+    updateLeaderboard();
+
+    // Alerts
+    function updateAlerts(){
+      alertsBox.innerHTML='';
+      devices.forEach(d=>{
+        if(d.fill>80){
+          alertsBox.innerHTML+=`<div class="text-danger"><i class="fa fa-exclamation-circle"></i> ${d.name} almost full (${d.fill}%)</div>`;
+        }
+      });
+    }
+    updateAlerts();
+
+    // Bin Fill Simulation
+    function animateBins(){
+      organicFill.style.height='70%';
+      recycleFill.style.height='55%';
+      hazardFill.style.height='25%';
+    }
+    animateBins();
+
+    // Mode toggle
+    document.getElementById('modeToggle').addEventListener('click',()=>document.body.classList.toggle('dark'));
+  </script>
+</body>
+</html>
