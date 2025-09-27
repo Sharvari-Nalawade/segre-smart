@@ -14,9 +14,6 @@ Built with **HTML, Bootstrap, Chart.js, and Leaflet**.
 - 🌗 Dark/Light mode toggle  
 - ⚡ Live-updating and engaging user interface  
 
-
-## 🚀 Live Demo
-[👉 Try it here] 
 ## 🔧 Installation & Usage
 1. Clone this repository:
    ```bash
