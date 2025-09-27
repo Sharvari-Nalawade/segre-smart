@@ -5,7 +5,7 @@ An interactive IoT-enabled dashboard for smart municipal waste management.
 It visualizes household waste data, bin device status, community recycling challenges, and household rewards.  
 Built with **HTML, Bootstrap, Chart.js, and Leaflet**.
 ## ✨ Features
-- 🌍 Interactive map of IoT-enabled waste bins  
+- 🌍 Interactive map of IoT-enabled waste bins.
 - 📊 Waste trends chart (organic, recyclable, hazardous)  
 - 🔔 Real-time waste feed simulation  
 - 🏆 Leaderboard with badges (Bronze, Silver, Gold, Platinum)  
