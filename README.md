@@ -16,7 +16,7 @@ Built with **HTML, Bootstrap, Chart.js, and Leaflet**.
 
 
 ## 🚀 Live Demo
-[👉 Try it here] (file:///C:/Users/hp/OneDrive/Desktop/SegreSmart.html)
+[👉 Try it here] 
 ## 🔧 Installation & Usage
 1. Clone this repository:
    ```bash
@@ -43,7 +43,6 @@ Built with **HTML, Bootstrap, Chart.js, and Leaflet**.
 - 🤖 Machine learning predictions for waste generation trends  
 ## 🤝 Contributing
 Contributions, issues, and feature requests are welcome!  
-Feel free to check the [issues page](https://github.com/your-username/waste-dashboard/issues).
 ## 📜 License
 This project is licensed under the MIT License.  
 See the [LICENSE](LICENSE) file for details.
