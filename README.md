@@ -19,6 +19,8 @@ Built with **HTML, Bootstrap, Chart.js, and Leaflet**.
    ```bash
    git clone https://github.com/your-username/waste-dashboard.git
    cd waste-dashboard
+##  Live Demo:
+
 
 ### 5. **Project Architecture**
 ```md
