@@ -13,11 +13,10 @@ Built with **HTML, Bootstrap, Chart.js, and Leaflet**.
 - 🏘️ Community Challenge panel (wards competing)  
 - 🌗 Dark/Light mode toggle  
 - ⚡ Live-updating and engaging user interface  
-## 📸 Screenshots
-(Add screenshots of your dashboard UI here)
+
 
 ## 🚀 Live Demo
-[👉 Try it here](https://your-demo-link.com)  
+[👉 Try it here] (file:///C:/Users/hp/OneDrive/Desktop/SegreSmart.html)
 ## 🔧 Installation & Usage
 1. Clone this repository:
    ```bash
