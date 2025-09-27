@@ -24,24 +24,28 @@ Built with **HTML, Bootstrap, Chart.js, and Leaflet**.
 
 ### 5. **Project Architecture**
 ```md
-## 🏗️ Project Structure
+##🏗️ Project Structure
 - `ultimate-dashboard.html` → Main dashboard code  
 - `README.md` → Documentation  
-- `/assets/` → (optional) images/screenshots/icons  
+- `/assets/` → (optional) images/screenshots/icons
+
 ## 🛠️ Technologies
 - [Bootstrap 5](https://getbootstrap.com/) → Styling and layout  
 - [Chart.js](https://www.chartjs.org/) → Interactive charts  
 - [Leaflet.js](https://leafletjs.com/) → Maps for bin locations  
 - [Font Awesome](https://fontawesome.com/) → Icons  
-- Vanilla JavaScript → Real-time simulation  
+- Vanilla JavaScript → Real-time simulation
+
 ## 🚧 Future Improvements
 - ✅ Real-time integration with IoT sensors  
 - ✅ Live data from municipal waste collection APIs  
 - 📊 Exportable reports (CSV, PDF)  
 - 🔔 Push notifications for bin alerts  
-- 🤖 Machine learning predictions for waste generation trends  
+- 🤖 Machine learning predictions for waste generation trends
+
 ## 🤝 Contributing
-Contributions, issues, and feature requests are welcome!  
+Contributions, issues, and feature requests are welcome!
+
 ## 📜 License
 This project is licensed under the MIT License.  
 See the [LICENSE](LICENSE) file for details.
